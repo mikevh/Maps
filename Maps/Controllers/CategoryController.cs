@@ -11,116 +11,111 @@ using Maps.Models;
 
 namespace Maps.Controllers
 {
-    public class LocationController : Controller
+    public class CategoryController : Controller
     {
         private MapsEntities db = new MapsEntities();
 
-        // GET: /Location/
+        // GET: /Category/
         public async Task<ActionResult> Index()
         {
-            var locations = db.Locations.Include(l => l.Category);
-            return View(await locations.ToListAsync());
+            return View(await db.Categories.ToListAsync());
         }
 
-        // GET: /Location/Details/5
+        // GET: /Category/Details/5
         public async Task<ActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Location location = await db.Locations.FindAsync(id);
-            if (location == null)
+            Category category = await db.Categories.FindAsync(id);
+            if (category == null)
             {
                 return HttpNotFound();
             }
-            return View(location);
+            return View(category);
         }
 
-        // GET: /Location/Create
+        // GET: /Category/Create
         public ActionResult Create()
         {
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name");
             return View();
         }
 
-        // POST: /Location/Create
+        // POST: /Category/Create
 		// To protect from over posting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		// 
 		// Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Location location)
+        public async Task<ActionResult> Create(Category category)
         {
             if (ModelState.IsValid)
             {
-                db.Locations.Add(location);
+                db.Categories.Add(category);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", location.CategoryId);
-            return View(location);
+            return View(category);
         }
 
-        // GET: /Location/Edit/5
+        // GET: /Category/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Location location = await db.Locations.FindAsync(id);
-            if (location == null)
+            Category category = await db.Categories.FindAsync(id);
+            if (category == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", location.CategoryId);
-            return View(location);
+            return View(category);
         }
 
-        // POST: /Location/Edit/5
+        // POST: /Category/Edit/5
 		// To protect from over posting attacks, please enable the specific properties you want to bind to, for 
 		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 		// 
 		// Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Location location)
+        public async Task<ActionResult> Edit(Category category)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(location).State = EntityState.Modified;
+                db.Entry(category).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", location.CategoryId);
-            return View(location);
+            return View(category);
         }
 
-        // GET: /Location/Delete/5
+        // GET: /Category/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
             if (id == null)
             {
 				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Location location = await db.Locations.FindAsync(id);
-            if (location == null)
+            Category category = await db.Categories.FindAsync(id);
+            if (category == null)
             {
                 return HttpNotFound();
             }
-            return View(location);
+            return View(category);
         }
 
-        // POST: /Location/Delete/5
+        // POST: /Category/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Location location = await db.Locations.FindAsync(id);
-            db.Locations.Remove(location);
+            Category category = await db.Categories.FindAsync(id);
+            db.Categories.Remove(category);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

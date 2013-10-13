@@ -40,6 +40,14 @@
             </div>
         </div>
 
+        <div class="control-group">
+            @Html.LabelFor(model => model.CategoryId, "CategoryId", new { @class = "control-label" })
+            <div class="controls">
+                @Html.DropDownList("CategoryId", String.Empty)
+                @Html.ValidationMessageFor(model => model.CategoryId, null, new { @class = "help-inline" })
+            </div>
+        </div>
+
         <div class="form-actions no-color">
             <input type="submit" value="Save" class="btn" />
         </div>

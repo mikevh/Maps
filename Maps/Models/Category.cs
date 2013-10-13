@@ -12,14 +12,16 @@ namespace Maps.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Location
+    public partial class Category
     {
+        public Category()
+        {
+            this.Locations = new HashSet<Location>();
+        }
+    
         public int Id { get; set; }
         public string Name { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-        public Nullable<int> CategoryId { get; set; }
     
-        public virtual Category Category { get; set; }
+        public virtual ICollection<Location> Locations { get; set; }
     }
 }

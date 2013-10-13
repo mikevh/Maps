@@ -26,5 +26,6 @@ namespace Maps.Models
         }
     
         public virtual DbSet<Location> Locations { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
     }
 }
