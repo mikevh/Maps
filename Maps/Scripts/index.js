@@ -1,5 +1,14 @@
-﻿var map;
+﻿var app = angular.module('maps', []);
+var map;
 var openInfoWindow;
+
+initialize();
+
+app.controller('Index', function($scope) {
+    $.get('/api/location').success(function(data) {
+        showMarkers(data);
+    })
+});
 
 function initialize() {
     var mapOptions = {
@@ -33,11 +42,3 @@ function showMarkers(locations) {
         });
     });
 }
-
-$(function () {
-    initialize();
-
-    $.get('/api/location', function (data) {
-        showMarkers(data);
-    });
-});
