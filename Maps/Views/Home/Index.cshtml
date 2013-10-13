@@ -21,7 +21,8 @@
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng(loc.Latitude, loc.Longitude),
                     map: map,
-                    title: loc.Name
+                    title: loc.Name,
+                    animation: google.maps.Animation.DROP
                 });
 
                 var contentString = '<a href="/Location/Details/' + loc.Id + '">' + loc.Name + '</a>';
