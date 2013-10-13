@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Reclaim Denton Maps";  
+    ViewBag.Title = "Reclaim Denton Maps";
 }
 @section scripts {
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
@@ -12,11 +12,19 @@
             height: 500px;
             margin: 0;
             padding: 0;
-            
         }
         #map-canvas img {
             max-width: none;
         }
     </style>
 }
-<div id="map-canvas"></div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2">
+            menu
+        </div>
+        <div class="span10">
+            <div id="map-canvas"></div>
+        </div>
+    </div>
+</div>
