@@ -5,6 +5,8 @@
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script>
         var map;
+        var openInfoWindow;
+
         function initialize() {
             var mapOptions = {
                 zoom: 7,
@@ -21,6 +23,19 @@
                     map: map,
                     title: loc.Name
                 });
+
+                var contentString = '<a href="/Location/Details/' + loc.Id + '">' + loc.Name + '</a>';
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString,
+                });
+
+                google.maps.event.addListener(marker, 'click', function () {
+                    if (openInfoWindow != null) {
+                        openInfoWindow.close();
+                    }
+                    openInfoWindow = infowindow;
+                    infowindow.open(map, marker);
+                });
             });
         }
 
@@ -30,7 +45,6 @@
             $.get('/api/location', function(data) {
                 showMarkers(data);
             });
-
         });
     </script>
 }
