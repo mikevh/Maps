@@ -5,18 +5,28 @@ app.controller('Index', function($scope, $http) {
     var map;
     var openInfoWindow;
 
-    $scope.toggleGroup = function(obj) {
+    $scope.markers = [];
+
+    $scope.toggleGroup = function (obj) {
         obj.Show = !obj.Show;
+
+        $scope.markers.forEach(function(m) {
+            if (m.CategoryId == obj.Id) {
+                m.setMap(obj.Show ? map : null);
+            }
+        });
     };
 
     $scope.showMarkers = function(locations) {
-        locations.forEach(function(loc) {
+        locations.forEach(function (loc) {
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(loc.Latitude, loc.Longitude),
                 map: map,
                 title: loc.Name,
-                animation: google.maps.Animation.DROP
+                animation: google.maps.Animation.DROP,
+                CategoryId: loc.CategoryId
             });
+            $scope.markers.push(marker);
 
             var contentString = '<a href="/Location/Details/' + loc.Id + '">' + loc.Name + '</a>';
             var infowindow = new google.maps.InfoWindow({
