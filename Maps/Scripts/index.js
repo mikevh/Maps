@@ -5,6 +5,10 @@ app.controller('Index', function($scope, $http) {
     var map;
     var openInfoWindow;
 
+    $scope.toggleGroup = function(obj) {
+        obj.Show = !obj.Show;
+    };
+
     $scope.showMarkers = function(locations) {
         locations.forEach(function(loc) {
             var marker = new google.maps.Marker({
@@ -29,7 +33,7 @@ app.controller('Index', function($scope, $http) {
         });
     };
 
-    $scope.initialize = function() {
+    $scope.initializeMap = function () {
         var mapOptions = {
             zoom: 7,
             center: new google.maps.LatLng(47.22, -120.72),
@@ -38,9 +42,16 @@ app.controller('Index', function($scope, $http) {
         map = new google.maps.Map($('#map-canvas')[0], mapOptions);
     };
 
-    $scope.initialize();
+    $scope.initializeMap();
 
     $http.get('/api/location').success(function (data) {
         $scope.showMarkers(data);
-    }).error(function(data) { alert(data); });
+    }).error(function (data) { alert(data); });
+
+    $http.get('/api/category').success(function (data) {
+        data.forEach(function(cat) {
+            cat.Show = true;
+        });
+        $scope.categories = data;
+    });
 });

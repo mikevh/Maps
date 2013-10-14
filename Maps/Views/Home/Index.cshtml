@@ -23,6 +23,9 @@
     <div class="row-fluid">
         <div class="span2" id="leftmenu">
             
+            <ul class="nav nav-pills nav-stacked">
+                <li ng-repeat="c in categories" ng-click="toggleGroup(c)"><i ng-class="{'icon-ok': c.Show, 'icon-ban-circle': !c.Show}"></i> {{ c.Name }}</li>
+            </ul>
         </div>
         <div class="span10">
             <div id="map-canvas"></div>
