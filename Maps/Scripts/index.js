@@ -1,6 +1,6 @@
-﻿var app = angular.module('maps', []);
+﻿var app = angular.module('maps', ['ngCookies']);
 
-app.controller('Index', function($scope, $http) {
+app.controller('Index', function($scope, $http, $cookies) {
 
     var map;
     var openInfoWindow;
@@ -28,7 +28,8 @@ app.controller('Index', function($scope, $http) {
             });
             $scope.markers.push(marker);
 
-            var contentString = '<a href="/Location/Details/' + loc.Id + '">' + loc.Name + '</a>';
+            var contentString = '<a href="/Location/Details/' + loc.Id + '">' + loc.Name + '</a>' +
+                '<p>Category: ' + loc.Category.Name + '</p>';
             var infowindow = new google.maps.InfoWindow({
                 content: contentString,
             });
