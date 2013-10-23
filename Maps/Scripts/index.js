@@ -45,8 +45,6 @@ app.controller('Index', function($scope, $http, $cookies) {
         });
     };
 
-    var cook;
-
     $scope.initializeMap = function (center) {
         cook = $cookies;
         console.log('initializeMap()');
@@ -62,14 +60,10 @@ app.controller('Index', function($scope, $http, $cookies) {
         map = new google.maps.Map($('#map-canvas')[0], mapOptions);
 
         google.maps.event.addListener(map, 'center_changed', function () {
-            
-            var c = map.getCenter();
-            
-            var lt = c.lb.toString();
-            var lg = c.mb.toString();
-
-            cook.lat = lt;
-            cook.lng = lg;
+            var c = map.getCenter(); // c.lb, c.mb
+            $cookies.lat = c.lb.toString();
+            $cookies.lng = c.mb.toString();
+            $scope.$apply();
         });
     };
     
