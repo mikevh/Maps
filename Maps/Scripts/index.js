@@ -49,9 +49,6 @@ app.controller('Index', function($scope, $http, $cookies) {
         cook = $cookies;
         console.log('initializeMap()');
 
-        console.log($cookies.lat);
-        console.log($cookies.lng);
-
         var mapOptions = {
             zoom: 7,
             center: center,
