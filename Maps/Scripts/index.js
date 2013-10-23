@@ -1,6 +1,7 @@
 ﻿var app = angular.module('maps', ['ngCookies']);
 
 app.controller('Index', function($scope, $http, $cookies) {
+    console.log('Index controller()');
 
     var map;
     var openInfoWindow;
@@ -44,23 +45,46 @@ app.controller('Index', function($scope, $http, $cookies) {
         });
     };
 
-    $scope.initializeMap = function () {
+    var cook;
+
+    $scope.initializeMap = function (center) {
+        cook = $cookies;
+        console.log('initializeMap()');
+
+        console.log($cookies.lat);
+        console.log($cookies.lng);
+
         var mapOptions = {
             zoom: 7,
-            center: new google.maps.LatLng(47.22, -120.72),
+            center: center,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         map = new google.maps.Map($('#map-canvas')[0], mapOptions);
-    };
 
-    $scope.initializeMap();
+        google.maps.event.addListener(map, 'center_changed', function () {
+            
+            var c = map.getCenter();
+            
+            var lt = c.lb.toString();
+            var lg = c.mb.toString();
+
+            cook.lat = lt;
+            cook.lng = lg;
+        });
+    };
+    
+    var mapCenter = new google.maps.LatLng($cookies.lat || 47.22,$cookies.lng || -120.72);
+
+    $scope.initializeMap(mapCenter);
 
     $http.get('/api/location').success(function (data) {
+        console.log('get /api/location success');
         $scope.showMarkers(data);
     }).error(function (data) { alert(data); });
 
     $http.get('/api/category').success(function (data) {
-        data.forEach(function(cat) {
+        console.log('get /api/category success');
+        data.forEach(function (cat) {
             cat.Show = true;
         });
         $scope.categories = data;
