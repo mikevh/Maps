@@ -11,6 +11,8 @@ app.controller('Index', function($scope, $http, $cookies) {
     $scope.toggleGroup = function (obj) {
         obj.Show = !obj.Show;
 
+        $cookies['showCategory' + obj.Id] = obj.Show ? '1' : '0';
+
         $scope.markers.forEach(function(m) {
             if (m.CategoryId == obj.Id) {
                 m.setMap(obj.Show ? map : null);
@@ -46,7 +48,6 @@ app.controller('Index', function($scope, $http, $cookies) {
     };
 
     $scope.initializeMap = function (center) {
-        cook = $cookies;
         console.log('initializeMap()');
 
         var mapOptions = {
@@ -60,7 +61,7 @@ app.controller('Index', function($scope, $http, $cookies) {
             var c = map.getCenter(); // c.lb, c.mb
             $cookies.lat = c.lb.toString();
             $cookies.lng = c.mb.toString();
-            $scope.$apply();
+            $scope.$apply(); // this function is executed outside of angular
         });
     };
     
@@ -75,8 +76,9 @@ app.controller('Index', function($scope, $http, $cookies) {
 
     $http.get('/api/category').success(function (data) {
         console.log('get /api/category success');
+        console.log($cookies);
         data.forEach(function (cat) {
-            cat.Show = true;
+            cat.Show = $cookies['showCategory' + cat.Id] == '1' ? true : false;
         });
         $scope.categories = data;
     });
