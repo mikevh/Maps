@@ -1,8 +1,6 @@
 ﻿var app = angular.module('maps', ['ngCookies']);
 
-app.controller('Index', function($scope, $http, $cookies) {
-    console.log('Index controller()');
-
+app.controller('Index', function($scope, $http, $cookies, $q) {
     var map;
     var openInfoWindow;
 
@@ -20,36 +18,30 @@ app.controller('Index', function($scope, $http, $cookies) {
         });
     };
 
-    $scope.showMarkers = function(locations) {
-        locations.forEach(function (loc) {
-            var marker = new google.maps.Marker({
-                position: new google.maps.LatLng(loc.Latitude, loc.Longitude),
-                map: map,
-                title: loc.Name,
-                animation: google.maps.Animation.DROP,
-                CategoryId: loc.CategoryId
-            });
-            $scope.markers.push(marker);
+    $scope.addMarker = function (loc, show) {
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(loc.Latitude, loc.Longitude),
+            map: show ? map : null,
+            title: loc.Name,
+            animation: google.maps.Animation.DROP,
+            CategoryId: loc.CategoryId
+        });
+        $scope.markers.push(marker);
 
-            var contentString = '<a href="/Location/Details/' + loc.Id + '">' + loc.Name + '</a>' +
-                '<p>Category: ' + loc.Category.Name + '</p>';
-            var infowindow = new google.maps.InfoWindow({
-                content: contentString,
-            });
+        var infowindow = new google.maps.InfoWindow({
+            content: '<a href="/Location/Details/' + loc.Id + '">' + loc.Name + '</a><p>Category: ' + loc.Category.Name + '</p>'
+        });
 
-            google.maps.event.addListener(marker, 'click', function() {
-                if (openInfoWindow != null) {
-                    openInfoWindow.close();
-                }
-                openInfoWindow = infowindow;
-                infowindow.open(map, marker);
-            });
+        google.maps.event.addListener(marker, 'click', function() {
+            if (openInfoWindow != null) {
+                openInfoWindow.close();
+            }
+            openInfoWindow = infowindow;
+            infowindow.open(map, marker);
         });
     };
 
     $scope.initializeMap = function (center) {
-        console.log('initializeMap()');
-
         var mapOptions = {
             zoom: 7,
             center: center,
@@ -61,25 +53,30 @@ app.controller('Index', function($scope, $http, $cookies) {
             var c = map.getCenter(); // c.lb, c.mb
             $cookies.lat = c.lb.toString();
             $cookies.lng = c.mb.toString();
-            $scope.$apply(); // this function is executed outside of angular
+            $scope.$apply(); // this handler is executed outside of scope
         });
     };
     
-    var mapCenter = new google.maps.LatLng($cookies.lat || 47.22,$cookies.lng || -120.72);
-
-    $scope.initializeMap(mapCenter);
-
-    $http.get('/api/location').success(function (data) {
-        console.log('get /api/location success');
-        $scope.showMarkers(data);
-    }).error(function (data) { alert(data); });
-
-    $http.get('/api/category').success(function (data) {
-        console.log('get /api/category success');
-        console.log($cookies);
+    var locationsP = $http.get('/api/location');
+    var categoriesP = $http.get('/api/category').success(function (data) {
         data.forEach(function (cat) {
-            cat.Show = $cookies['showCategory' + cat.Id] == '1' ? true : false;
+            var key = 'showCategory' + cat.Id;
+            if ($cookies[key] == undefined) {
+                $cookies[key] = '1';
+            }
+            cat.Show = $cookies[key] == '1';
         });
         $scope.categories = data;
     });
+
+    $q.all([categoriesP, locationsP]).then(function (results) {
+        results[1].data.forEach(function (loc) {
+            var show = $cookies['showCategory' + loc.CategoryId] == '1';
+            $scope.addMarker(loc, show);
+        });
+    });
+    
+    var mapCenter = new google.maps.LatLng($cookies.lat || 47.22, $cookies.lng || -120.72);
+    
+    $scope.initializeMap(mapCenter);
 });
