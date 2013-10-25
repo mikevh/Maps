@@ -1,43 +1,118 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Description;
 using Maps.Models;
 
 namespace Maps.Controllers.api
 {
     public class CategoryController : ApiController
     {
-        private MapsEntities _db = new MapsEntities();
+        private MapsEntities db = new MapsEntities();
 
-        // GET api/location
-        public IEnumerable<Category> Get()
+        // GET api/Category
+        public IQueryable<Category> GetCategories()
         {
-            var rv = _db.Categories;
-            return rv;
+            return db.Categories;
         }
 
-        // GET api/location/5
-        public string Get(int id)
+        // GET api/Category/5
+        [ResponseType(typeof(Category))]
+        public async Task<IHttpActionResult> GetCategory(int id)
         {
-            return "value";
+            Category category = await db.Categories.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(category);
         }
 
-        // POST api/location
-        public void Post([FromBody]string value)
+        // PUT api/Category/5
+        public async Task<IHttpActionResult> PutCategory(int id, Category category)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (id != category.Id)
+            {
+                return BadRequest();
+            }
+
+            db.Entry(category).State = EntityState.Modified;
+
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CategoryExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // PUT api/location/5
-        public void Put(int id, [FromBody]string value)
+        // POST api/Category
+        [ResponseType(typeof(Category))]
+        public async Task<IHttpActionResult> PostCategory(Category category)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            db.Categories.Add(category);
+            await db.SaveChangesAsync();
+
+            return CreatedAtRoute("DefaultApi", new { id = category.Id }, category);
         }
 
-        // DELETE api/location/5
-        public void Delete(int id)
+        // DELETE api/Category/5
+        [ResponseType(typeof(Category))]
+        public async Task<IHttpActionResult> DeleteCategory(int id)
         {
+            Category category = await db.Categories.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            db.Categories.Remove(category);
+            await db.SaveChangesAsync();
+
+            return Ok(category);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private bool CategoryExists(int id)
+        {
+            return db.Categories.Count(e => e.Id == id) > 0;
         }
     }
 }

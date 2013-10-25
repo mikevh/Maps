@@ -43,13 +43,11 @@ namespace Maps.Controllers
         }
 
         // POST: /Category/Create
-		// To protect from over posting attacks, please enable the specific properties you want to bind to, for 
-		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		// 
-		// Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(Category category)
+        public async Task<ActionResult> Create([Bind(Include="Id,Name")] Category category)
         {
             if (ModelState.IsValid)
             {
@@ -77,13 +75,11 @@ namespace Maps.Controllers
         }
 
         // POST: /Category/Edit/5
-		// To protect from over posting attacks, please enable the specific properties you want to bind to, for 
-		// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-		// 
-		// Example: public ActionResult Update([Bind(Include="ExampleProperty1,ExampleProperty2")] Model model)
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Category category)
+        public async Task<ActionResult> Edit([Bind(Include="Id,Name")] Category category)
         {
             if (ModelState.IsValid)
             {
@@ -99,7 +95,7 @@ namespace Maps.Controllers
         {
             if (id == null)
             {
-				return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Category category = await db.Categories.FindAsync(id);
             if (category == null)
@@ -122,7 +118,10 @@ namespace Maps.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            db.Dispose();
+            if (disposing)
+            {
+                db.Dispose();
+            }
             base.Dispose(disposing);
         }
     }

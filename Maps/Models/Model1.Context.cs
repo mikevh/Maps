@@ -25,7 +25,7 @@ namespace Maps.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
+        public virtual DbSet<Location> Locations { get; set; }
     }
 }
