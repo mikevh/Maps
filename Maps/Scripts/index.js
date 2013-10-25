@@ -41,18 +41,21 @@ app.controller('Index', function($scope, $http, $cookies, $q) {
         });
     };
 
-    $scope.initializeMap = function (center) {
+    $scope.initializeMap = function (center, zoom) {
         var mapOptions = {
-            zoom: 7,
+            zoom: parseInt(zoom),
             center: center,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         map = new google.maps.Map($('#map-canvas')[0], mapOptions);
 
         google.maps.event.addListener(map, 'center_changed', function () {
-            var c = map.getCenter(); // c.lb, c.mb
-            $cookies.lat = c.lb.toString();
-            $cookies.lng = c.mb.toString();
+            var center = map.getCenter(); // c.lb, c.mb
+            var zoom = map.getZoom();
+            
+            $cookies.lat = center.lb.toString();
+            $cookies.lng = center.mb.toString();
+            $cookies.zoom = zoom.toString();
             $scope.$apply(); // this handler is executed outside of scope
         });
     };
@@ -77,6 +80,7 @@ app.controller('Index', function($scope, $http, $cookies, $q) {
     });
     
     var mapCenter = new google.maps.LatLng($cookies.lat || 47.22, $cookies.lng || -120.72);
+    var mapZoom = $cookies.zoom || 6;
     
-    $scope.initializeMap(mapCenter);
+    $scope.initializeMap(mapCenter, mapZoom);
 });
