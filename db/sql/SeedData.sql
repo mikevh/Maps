@@ -1,0 +1,9 @@
+﻿INSERT INTO Category VALUES ('Default')
+INSERT INTO Category VALUES ('Work')
+INSERT INTO Category VALUES ('Play')
+
+INSERT INTO Location VALUES(1,'Home',48.1035, -122.261)
+INSERT INTO Location VALUES(2,'Attunix', 47.61785, -122.20022)
+INSERT INTO Location VALUES(3,'Marina', 48.00477, -122.22149)
+
+
