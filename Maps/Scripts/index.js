@@ -3,8 +3,42 @@
 app.controller('Index', function($scope, $http, $cookies, $q) {
     var map;
     var openInfoWindow;
+    var searchService;
 
     $scope.markers = [];
+
+    $scope.search = function() { 
+        var searchRadius = $scope.getSearchRadius();
+        var request = {            
+            location: map.getCenter(),
+            radius: searchRadius,
+            query: $scope.search_text
+        };
+        searchService.textSearch(request, function(results, status) {
+            if (status == "OK") {
+                $scope.addSearchResultsToMap(results);
+            } else alert(status);
+        });
+    };
+
+    $scope.addSearchResultsToMap = function(results) {
+        console.log(results);
+    };
+
+    $scope.getSearchRadius = function() {
+        var bounds = map.getBounds();
+        var center = map.getCenter();
+        var ne = bounds.getNorthEast();
+
+        var lat1 = center.lat();
+        var lng1 = center.lng();
+        var lat2 = ne.lat();
+        var lng2 = ne.lng();
+
+        var r = 3963.0;
+        var dis = r * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1));
+        return dis;
+    };
 
     $scope.toggleGroup = function (obj) {
         obj.Show = !obj.Show;
@@ -48,6 +82,7 @@ app.controller('Index', function($scope, $http, $cookies, $q) {
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         map = new google.maps.Map($('#map-canvas')[0], mapOptions);
+        searchService = new google.maps.places.PlacesService(map);
 
         google.maps.event.addListener(map, 'center_changed', function () {
             var center = map.getCenter(); // c.lb, c.mb
