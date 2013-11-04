@@ -1,5 +1,6 @@
 ﻿var app = angular.module('maps', ['ngCookies']);
 
+ 
 app.controller('Index', function($scope, $http, $cookies, $q) {
     var map;
     var openInfoWindow;
